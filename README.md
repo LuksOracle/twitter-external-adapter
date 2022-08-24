@@ -2,7 +2,9 @@
 
 (adapted from https://github.com/thodges-gh/CL-EA-Python-Template)
 
-This template receives a twitter_id, and returns a boolean checking whether tweet address == input address. Its future implementation will return the resulting address inside said twitter_id, and leave the check to the smart contract
+This template receives a twitter_id, and returns a boolean checking whether tweet address == input address. Its future implementation will return the resulting address inside said twitter_id, and leave the check to the smart contract.
+
+In this instance, we have also deployed the external adapter as a serverless function on AWS, endpoint at https://r47nbe0m7j.execute-api.us-west-2.amazonaws.com/default/twitter-EA-AWS.
 
 ## Configuration:
 
@@ -36,7 +38,7 @@ Create a bridge with the following settings:
 
 Next, you need to make the request coming from your oracle accessible to your node.
 
-This TOML file should do, but make sure to change the contract address to be your oracle address:
+This TOML file should do, but make sure to change the contract address to be your oracle contract address:
 
 ```
 type = "directrequest"
