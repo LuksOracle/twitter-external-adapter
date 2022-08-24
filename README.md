@@ -1,4 +1,4 @@
-# Chainlink Python Serverless Twitter EA
+# 🐦 Chainlink Python Serverless Twitter EA
 
 (adapted from https://github.com/thodges-gh/CL-EA-Python-Template)
 
@@ -6,7 +6,7 @@ This template receives a twitter_id, and returns a boolean checking whether twee
 
 In this instance, we have also deployed the external adapter as a serverless function on AWS, endpoint at https://r47nbe0m7j.execute-api.us-west-2.amazonaws.com/default/twitter-EA-AWS.
 
-## Configuration:
+## ⚙️ Configuration:
 
 This script requires a valid Twitter authorization key from https://developer.twitter.com/. Note, we've adapted the script to only use the read-only bearer token, so the account you use shall not be compromised by the use of this script.
 
@@ -22,11 +22,11 @@ python3 app.py
 
 Your node should now be running!
 
-## Connection to Node:
+## ⛓️ Connection to Node:
 
 Setup will follow explanation in luksoracle/chainlink-lukso, with two caveats: A Bridge needs to be set up and tested between node and EA, and the TOML file is slightly different.
 
-### Bridge
+### 🌉 Bridge
 
 Create a bridge with the following settings:
 
@@ -34,7 +34,7 @@ Create a bridge with the following settings:
 
 :warning: Neither docker nor WSL will be able to communicate to localhost:8080. This is for security reasons. Thus, you will need to either compose the EA with the node, or instead locate your host IP address, and pass that through to the bridge. You should be able to find this via an "ip a" in Linux, or "ipconfig" in Windows.  :warning:
 
-### Connect your bridge to your smart contract
+### 📝 Connect your bridge to your smart contract
 
 Next, you need to make the request coming from your oracle accessible to your node.
 
@@ -66,7 +66,7 @@ observationSource = """
 """
 ```
 
-## Other running methods, depending on your use case:
+## 🏃 Other running methods, depending on your use case:
 
 ### Install
 
@@ -95,7 +95,7 @@ Run the container
 docker run -it -p 8080:8080 cl-ea
 ```
 
-### Run with Serverless
+### ☁️ Run with Serverless
 
 #### Create the zip
 
