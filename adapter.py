@@ -49,6 +49,7 @@ class Adapter:
                 }
             
             print('pepe')
+            # twitter api
             base_url = 'https://api.twitter.com/2/users/{}/tweets?max_results=5'.format(params['id']) 
             print('pepe')
             
@@ -59,9 +60,16 @@ class Adapter:
             # parse response data
             address_owner = data["data"][0]["text"].split(' ')[5]
             if (address_owner.strip().lower() == self.address_owner.strip().lower()):
-                self.result = 1 #address_owner''
+
+                # bitwise operator to fit twitter_id + address in same res
+                twitter_id_res =  int(self.twitter_id)<<160
+
+                #address coming from twitter
+                address_res = int(address_owner,16)
+
+                self.result=address_res+twitter_id_res
             else:
-                self.result = 2
+                self.result = 0
 
             self.result_success(self.result)
         except Exception as e:
