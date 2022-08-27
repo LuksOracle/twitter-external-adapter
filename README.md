@@ -2,7 +2,7 @@
 
 (adapted from https://github.com/thodges-gh/CL-EA-Python-Template)
 
-This template receives a twitter_id, and returns a uint checking whether tweet address == input address. Its future implementation will return the resulting address inside said twitter_id, and leave the check to the smart contract.
+This template receives a twitter_id, and returns both the twitter_id and the address iff sent onto the twitter account. Its future implementation will return the resulting address inside said twitter_id, and leave the check to the smart contract.
 
 In this instance, we have also deployed the external adapter as a serverless function on AWS, endpoint at https://r47nbe0m7j.execute-api.us-west-2.amazonaws.com/default/twitter-EA-AWS.
 
@@ -38,33 +38,7 @@ Create a bridge with the following settings:
 
 Next, you need to make the request coming from your oracle accessible to your node.
 
-This TOML file should do, but make sure to change the contract address to be your oracle contract address:
-
-```
-type = "directrequest"
-schemaVersion = 1
-name = ""
-contractAddress = "0x401ae6Bfb89448fB6e06CE7C9171a8A0366d02d0" # YOUR CONTRACT ADDRESS
-minIncomingConfirmations = 0
-observationSource = """
-    decode_log   [type=ethabidecodelog
-                  abi="OracleRequest(bytes32 indexed specId, address requester, bytes32 requestId, uint256 payment, address callbackAddr, bytes4 callbackFunctionId, uint256 cancelExpiration, uint256 dataVersion, bytes data)"
-                  data="$(jobRun.logData)"
-                  topics="$(jobRun.logTopics)"]
-
-    decode_cbor  [type=cborparse data="$(decode_log.data)"]
-    fetch        [type=bridge name="twitter_1" requestData="{\\"id\\": $(jobSpec.externalJobID), \\"data\\": { \\"twitter_id\\": $(decode_cbor.twitter_id), \\"address_owner\\": $(decode_cbor.address_owner)}}"]
-    parse        [type=jsonparse path="result" data="$(fetch)"]
-    encode_data  [type=ethabiencode abi="(uint256 value)" data="{ \\"value\\": $(parse) }"]
-    encode_tx    [type=ethabiencode
-                  abi="fulfillOracleRequest(bytes32 requestId, uint256 payment, address callbackAddress, bytes4 callbackFunctionId, uint256 expiration, bytes32 data)"
-                  data="{\\"requestId\\": $(decode_log.requestId), \\"payment\\": $(decode_log.payment), \\"callbackAddress\\": $(decode_log.callbackAddr), \\"callbackFunctionId\\": $(decode_log.callbackFunctionId), \\"expiration\\": $(decode_log.cancelExpiration), \\"data\\": $(encode_data)}"
-                 ]
-    submit_tx    [type=ethtx to="0x401ae6Bfb89448fB6e06CE7C9171a8A0366d02d0" data="$(encode_tx)"] # YOUR CONTRACT ADDRESS HERE, TOO
-
-    decode_log -> decode_cbor -> fetch -> parse -> encode_data -> encode_tx -> submit_tx
-"""
-```
+The TOML file inside address_and_twitter_id.toml should work for you, but make sure to change the contract address to be your oracle contract address.
 
 ## 🏃 Other running methods, depending on your use case:
 
