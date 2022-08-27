@@ -1,0 +1,25 @@
+type = "directrequest"
+schemaVersion = 1
+name = ""
+externalJobID = "31c6d9c9-7ae6-4e6d-a1d8-2cdf4b4077ad"
+maxTaskDuration = "0s"
+contractAddress = "0x401ae6Bfb89448fB6e06CE7C9171a8A0366d02d0"
+minIncomingConfirmations = 0
+observationSource = """
+    decode_log   [type=ethabidecodelog
+                  abi="OracleRequest(bytes32 indexed specId, address requester, bytes32 requestId, uint256 payment, address callbackAddr, bytes4 callbackFunctionId, uint256 cancelExpiration, uint256 dataVersion, bytes data)"
+                  data="$(jobRun.logData)"
+                  topics="$(jobRun.logTopics)"]
+    decode_cbor  [type=cborparse data="$(decode_log.data)"]
+    fetch        [type=bridge name="twitter_1" requestData="{\\"id\\": $(jobSpec.externalJobID), \\"data\\": { \\"twitter_id\\": $(decode_cbor.twitter_id), \\"address_owner\\": $(decode_cbor.address_owner)}}"]
+    parse        [type=jsonparse path="result" data="$(fetch)"]
+
+    encode_tx  [type="ethabiencode"
+                abi="fulfillOracleRequest(bytes32 requestId, uint256 payment, address callbackAddress, bytes4 callbackFunctionId, uint256 expiration, bytes32 data)"
+                data="{\\"requestId\\": $(decode_log.requestId), \\"payment\\":   $(decode_log.payment), \\"callbackAddress\\": $(decode_log.callbackAddr), \\"callbackFunctionId\\": $(decode_log.callbackFunctionId), \\"expiration\\": $(decode_log.cancelExpiration), \\"data\\": $(parse)}"
+                ]
+
+    submit_tx    [type=ethtx to="0x401ae6Bfb89448fB6e06CE7C9171a8A0366d02d0" data="$(encode_tx)"]
+
+    decode_log -> decode_cbor -> fetch -> parse  -> encode_tx -> submit_tx
+"""
