@@ -76,7 +76,7 @@ class Adapter:
                 
                 self.result = address_res_b # address_res
             else:
-                self.result = 0
+                self.result = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
             self.result_success(self.result)
         except Exception as e:
