@@ -59,15 +59,22 @@ class Adapter:
             data = response.json()
             # parse response data
             address_owner = data["data"][0]["text"].split(' ')[5]
+            
             if (address_owner.strip().lower() == self.address_owner.strip().lower()):
-
+                
                 # bitwise operator to fit twitter_id + address in same res
                 twitter_id_res =  int(self.twitter_id)<<160
-
+                
                 #address coming from twitter
                 address_res = int(address_owner,16)
-
-                self.result=address_res+twitter_id_res
+                result_unpadded = str(hex(address_res+twitter_id_res))
+                
+                # pad for hex for chainlink node
+                print(result_unpadded)
+                pad = '0' * ( 66 - len(result_unpadded))
+                address_res_b = '0x' + pad + str(hex(address_res+twitter_id_res))[2:]
+                
+                self.result = address_res_b # address_res
             else:
                 self.result = 0
 
